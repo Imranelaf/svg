@@ -1,11 +1,39 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { gsap } from 'gsap';
 import "./map.css";
 
 const Map = () => {
-  const franceref = useRef();
+  const franceref = useRef();	
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+const handleMouseMove = (event) => {
+  const bounds = event.currentTarget.getBoundingClientRect();
+  const x = event.clientX - bounds.left - bounds.width / 2;
+  const y = event.clientY - bounds.top - bounds.height / 2;
+  setPosition({ x, y });
+};
+
+{/*Create an animation based on the mouse movement*/}
+useEffect(() => {
+  gsap.to(franceref.current, {
+    x: position.x / 20,
+    y: position.y / 20,
+    duration: 1,
+    ease: "power2.out"
+  });
+}, [position]);
+
+		
+	
+
+
 
   return (
-    <div className="mapContainer">
+    <div className="mapContainer" onMouseMove={handleMouseMove}>
+    <div className="slogan italic">
+    	 <h1 className="text-2xl font-bold">Hello Tailwind!</h1>
+    </div>
+
       <svg
         baseProfile="tiny"
         stroke="#ffffff"
