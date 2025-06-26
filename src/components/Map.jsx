@@ -30,7 +30,7 @@ useEffect(() => {
 
   return (
     <div className="mapContainer" onMouseMove={handleMouseMove}>
-    <div className="slogan italic">
+    <div className="slogan">
     	 <h1 className="text-2xl font-bold">Hello Tailwind!</h1>
     </div>
 
