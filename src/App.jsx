@@ -1,9 +1,11 @@
 import './App.css'
+import Map from './components/Map';
+
 
 const App = ()=>{
   return(
     <div className='container'>
-    <h1>SVG WEB</h1>
+    <Map />
     </div>
   )
 }
