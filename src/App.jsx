@@ -1,11 +1,14 @@
 import './App.css'
-import Map from './components/Map';
+import About from './pages/About.jsx';
+import Infos from './pages/Infos.jsx';
+
 
 
 const App = ()=>{
   return(
     <div className='container'>
-    <Map />
+    <About />
+    <Infos />
     </div>
   )
 }

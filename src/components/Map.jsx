@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { gsap } from 'gsap';
 import "./map.css";
+import Slogan from "./Slogan";
 
 const Map = () => {
   const franceref = useRef();	
@@ -16,9 +17,9 @@ const handleMouseMove = (event) => {
 {/*Create an animation based on the mouse movement*/}
 useEffect(() => {
   gsap.to(franceref.current, {
-    x: position.x / 20,
-    y: position.y / 20,
-    duration: 1,
+    x: position.x / 15,
+    y: position.y / 15,
+    duration: 3,
     ease: "power2.out"
   });
 }, [position]);
@@ -30,9 +31,9 @@ useEffect(() => {
 
   return (
     <div className="mapContainer" onMouseMove={handleMouseMove}>
-    <div className="slogan">
-    	 <h1 className="text-2xl font-bold">Hello Tailwind!</h1>
-    </div>
+      <div className="slogan">
+        <Slogan />
+      </div>
 
       <svg
         baseProfile="tiny"
@@ -50,8 +51,8 @@ useEffect(() => {
         <defs>
           <linearGradient id="franceFlag" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#0055A4" />   {/* Blue */}
-            <stop offset="33.33%" stopColor="#0055A4" />
-            <stop offset="33.34%" stopColor="#FFFFFF" /> {/* White */}
+            <stop offset="35%" stopColor="#0055A4" />
+            <stop offset="35.1%" stopColor="#FFFFFF" /> {/* White */}
             <stop offset="66.66%" stopColor="#FFFFFF" />
             <stop offset="66.67%" stopColor="#EF4135" /> {/* Red */}
             <stop offset="100%" stopColor="#EF4135" />
