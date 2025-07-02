@@ -27,6 +27,7 @@
 }
 
 .paragraph{
+  font-family: "Savate", Arial, Helvetica, sans-serif;;
 	margin-bottom: 2rem;
 	width: 70vw;
 	line-height: 2.2; 
@@ -40,7 +41,25 @@
 	width: 10rem;
 	position: absolute;
 	top:50%;
-	left: 8%;
+	left: 5%;
+}
+
+
+.Blob{
+  height: 3rem;
+  width: 8rem;
+  position: absolute;
+  background-color: aquamarine;
+
+
+}
+
+.fds{
+  min-width: 300px;
+  width: auto;
+  height: 300px;
+  border-color: blue;
+  z-index: 10;
 }
 
 

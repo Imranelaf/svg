@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 
-const BlobAnimation = ({color = "#0ff"}) => {
+const BlobAnimation = ({color = "#0ff", text = "", imageSrc = ""}) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const pointsRef = useRef([]);
+  const imageRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -12,6 +13,22 @@ const BlobAnimation = ({color = "#0ff"}) => {
 
     const ctx = canvas.getContext("2d");
     const container = canvas.parentElement;
+    
+    // Load image if imageSrc is provided
+    if (imageSrc && !imageRef.current) {
+      const img = new Image();
+      img.crossOrigin = "anonymous"; // Handle CORS if needed
+      img.onload = () => {
+        imageRef.current = img;
+      };
+      img.onerror = () => {
+        console.warn("Failed to load image:", imageSrc);
+        imageRef.current = null;
+      };
+      img.src = imageSrc;
+    } else if (!imageSrc) {
+      imageRef.current = null;
+    }
     
     // Set canvas size to match container
     const resizeCanvas = () => {
@@ -25,7 +42,7 @@ const BlobAnimation = ({color = "#0ff"}) => {
 
     // Define constants - center within the container
     const center = { x: canvas.width / 2, y: canvas.height / 2 };
-    const radius = Math.min(canvas.width, canvas.height) / 3; // Responsive radius
+    const baseRadius = Math.min(canvas.width, canvas.height) / 3; // Base radius
     const pointCount = 40;
     const threshold = 80;
     
@@ -38,19 +55,28 @@ const BlobAnimation = ({color = "#0ff"}) => {
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Create circle points
-    const createCirclePoints = () => {
+    // Create organic blob points (not perfect circle)
+    const createBlobPoints = () => {
       pointsRef.current = [];
       for (let i = 0; i < pointCount; i++) {
         const angle = (i / pointCount) * Math.PI * 2;
-        const x = center.x + Math.cos(angle) * radius;
-        const y = center.y + Math.sin(angle) * radius;
+        
+        // Add randomness to radius for organic shape
+        const radiusVariation = 0.3 + Math.random() * 0.7; // Random between 0.3 and 1.0
+        const noiseOffset = Math.sin(angle * 3) * 0.2 + Math.cos(angle * 5) * 0.15; // Sine wave distortion
+        const finalRadius = baseRadius * (radiusVariation + noiseOffset);
+        
+        const x = center.x + Math.cos(angle) * finalRadius;
+        const y = center.y + Math.sin(angle) * finalRadius;
+        
         pointsRef.current.push({
           x, y,
           originalX: x,
           originalY: y,
           vx: 0,
           vy: 0,
+          baseRadius: finalRadius, // Store individual radius for each point
+          angle: angle
         });
       }
     };
@@ -60,9 +86,11 @@ const BlobAnimation = ({color = "#0ff"}) => {
       return Math.hypot(a.x - b.x, a.y - b.y);
     };
 
-    // Draw blob function
+    // Draw blob function with text or image
     const drawBlob = (points) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw the blob shape
       ctx.beginPath();
       ctx.moveTo(points[0].x, points[0].y);
       
@@ -84,49 +112,129 @@ const BlobAnimation = ({color = "#0ff"}) => {
       
       ctx.fillStyle = color;
       ctx.fill();
+
+      // Draw content inside the blob (prioritize image over text)
+      if (imageSrc && imageRef.current) {
+        // Draw image inside blob
+        ctx.save();
+        
+        // Create clipping mask from the blob shape
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        
+        for (let i = 1; i < points.length; i++) {
+          const prev = points[i - 1];
+          const curr = points[i];
+          const cx = (prev.x + curr.x) / 2;
+          const cy = (prev.y + curr.y) / 2;
+          ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
+        }
+        
+        const lastPoint = points[points.length - 1];
+        const firstPoint = points[0];
+        const cxClose = (lastPoint.x + firstPoint.x) / 2;
+        const cyClose = (lastPoint.y + firstPoint.y) / 2;
+        ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, cxClose, cyClose);
+        ctx.closePath();
+        ctx.clip();
+        
+        // Calculate image dimensions to fit inside blob while maintaining aspect ratio
+        const image = imageRef.current;
+        const blobRadius = baseRadius * 0.8; // Make image slightly smaller than blob
+        const imageAspect = image.width / image.height;
+        
+        let drawWidth, drawHeight;
+        if (imageAspect > 1) {
+          // Landscape image
+          drawWidth = blobRadius * 2;
+          drawHeight = drawWidth / imageAspect;
+        } else {
+          // Portrait or square image
+          drawHeight = blobRadius * 2;
+          drawWidth = drawHeight * imageAspect;
+        }
+        
+        // Center the image
+        const drawX = center.x - drawWidth / 2;
+        const drawY = center.y - drawHeight / 2;
+        
+        // Add subtle shadow/glow effect
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 10;
+        
+        ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+        
+        ctx.restore();
+        
+      } else if (text) {
+        // Draw text inside the blob if no image
+        ctx.save();
+        
+        // Set text properties
+        const fontSize = Math.min(canvas.width, canvas.height) / 8;
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Add text shadow for better visibility
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+        
+        // Draw text at center
+        ctx.fillText(text, center.x, center.y);
+        
+        ctx.restore();
+      }
     };
 
     // Animation function
+    const animate = () => {
+      const points = pointsRef.current;
+      const mouse = mouseRef.current;
+      const time = Date.now() * 0.002;
 
-const animate = () => {
-  const points = pointsRef.current;
-  const mouse = mouseRef.current;
-  const time = Date.now() * 0.002; // Adjust speed multiplier
+      for (let i = 0; i < points.length; i++) {
+        const point = points[i];
+        const dist = distance(mouse, point);
+        
+        // Mouse force interaction
+        if (dist < threshold) {
+          const force = (threshold - dist) / threshold;
+          const angle = Math.atan2(point.y - mouse.y, point.x - mouse.x);
+          point.vx += Math.cos(angle) * force * 5;
+          point.vy += Math.sin(angle) * force * 5;
+        }
 
-  for (let i = 0; i < points.length; i++) {
-    const point = points[i];
-    const dist = distance(mouse, point);
-    
-    // Mouse force interaction
-    if (dist < threshold) {
-      const force = (threshold - dist) / threshold;
-      const angle = Math.atan2(point.y - mouse.y, point.x - mouse.x);
-      point.vx += Math.cos(angle) * force * 5;
-      point.vy += Math.sin(angle) * force * 5;
-    }
+        // Enhanced organic oscillation
+        const primaryWave = Math.sin(time + point.angle * 2) * 0.8;
+        const secondaryWave = Math.cos(time * 1.5 + point.angle * 3) * 0.5;
+        const tertiaryWave = Math.sin(time * 0.8 + point.angle * 5) * 0.3;
+        
+        const oscillationX = primaryWave + secondaryWave;
+        const oscillationY = Math.cos(time + point.angle * 2) * 0.8 + tertiaryWave;
 
-    // Add subtle oscillation for organic motion
-    const angle = (i / points.length) * Math.PI * 2;
-    const oscillation = Math.sin(time + angle) * 0.8; // 0.5 pixel amplitude
-    const oscillationY = Math.cos(time + angle) * 0.8; // for Y axis variation
+        // Spring back to original position with oscillation
+        point.vx += ((point.originalX + oscillationX) - point.x) * 0.08;
+        point.vy += ((point.originalY + oscillationY) - point.y) * 0.08;
 
-    // Spring back to original + oscillation
-    point.vx += ((point.originalX + oscillation) - point.x) * 0.1;
-    point.vy += ((point.originalY + oscillationY) - point.y) * 0.1;
+        // Apply damping
+        point.vx *= 0.88;
+        point.vy *= 0.88;
+        
+        // Update position
+        point.x += point.vx;
+        point.y += point.vy;
+      }
 
-    point.vx *= 0.85;
-    point.vy *= 0.85;
-    point.x += point.vx;
-    point.y += point.vy;
-  }
-
-  drawBlob(points);
-  animationRef.current = requestAnimationFrame(animate);
-};
-
+      drawBlob(points);
+      animationRef.current = requestAnimationFrame(animate);
+    };
 
     // Initialize and start animation
-    createCirclePoints();
+    createBlobPoints();
     animate();
 
     // Cleanup function
@@ -137,7 +245,7 @@ const animate = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [color, text, imageSrc]); // Add imageSrc to dependencies
 
   return (
     <canvas 
@@ -146,7 +254,6 @@ const animate = () => {
         width: '100%',
         height: '100%',
         display: 'block',
-        
       }}
     />
   );
