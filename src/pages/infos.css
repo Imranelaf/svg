@@ -9,6 +9,7 @@
   padding: 2rem;
   box-sizing: border-box;
   position: relative;
+  
 }
 
 .images,
@@ -31,17 +32,25 @@
 	margin-bottom: 2rem;
 	width: 70vw;
 	line-height: 2.2; 
-	font-size: 2.5rem;
+	font-size: 2rem;
 	text-align: center;
 	z-index: 10;
 }
 
 .firstBlob{
-	height: 10rem;
-	width: 10rem;
+	height: auto;
+	width: auto;
+	position: absolute;
+	top:52%;
+	left: 3%;
+}
+
+.thirdBlob{
+	height: auto;
+	width: auto;
 	position: absolute;
 	top:50%;
-	left: 5%;
+	right: 3%;
 }
 
 
@@ -64,7 +73,7 @@
 
 
 @media (max-width: 768px) {
-  .firstBlob {
+  .firstBlob, .thirdBlob{
     display: none;
   }
 

@@ -1,5 +1,6 @@
 import Map from "../components/Map";
 import Slogan from "../components/Slogan";
+
 import './about.css';
 
 
@@ -9,7 +10,6 @@ const About = ()=>{
 		<div className='about'>
 	
 			<Map />
-			
 		</div>
 	
 	);

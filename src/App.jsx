@@ -1,6 +1,7 @@
 import './App.css'
 import About from './pages/About.jsx';
 import Infos from './pages/Infos.jsx';
+import Tours from './pages/Tours.jsx';
 
 
 
@@ -9,6 +10,7 @@ const App = ()=>{
     <div className='container'>
     <About />
     <Infos />
+     <Tours />
     </div>
   )
 }
