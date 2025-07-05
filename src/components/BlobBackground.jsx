@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const BlobAnimation = ({color = null, text = "", imageSrc = "", randomness = 0.5}) => {
+const BlobAnimation = ({color = null, text = "", imageSrc = "", randomness = 0.5}, size = 1) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
@@ -33,16 +33,16 @@ const BlobAnimation = ({color = null, text = "", imageSrc = "", randomness = 0.5
     // Set canvas size to match container
     const resizeCanvas = () => {
       const rect = container.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      canvas.width = rect.width * size;
+      canvas.height = rect.height * size;
     };
     
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
     // Define constants - center within the container
-    const center = { x: canvas.width / 2, y: canvas.height / 2 };
-    const baseRadius = Math.min(canvas.width, canvas.height) / 3; // Base radius
+     const center = { x: canvas.width / 2, y: canvas.height / 2 };
+    const baseRadius = Math.min(canvas.width, canvas.height) / 3 * size;// Base radius
     const pointCount = 40;
     const threshold = 80;
     
@@ -317,7 +317,7 @@ const BlobAnimation = ({color = null, text = "", imageSrc = "", randomness = 0.5
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [color, text, imageSrc, randomness]);
+  }, [color, text, imageSrc, randomness, size]);
 
   return (
     <canvas 
@@ -325,7 +325,7 @@ const BlobAnimation = ({color = null, text = "", imageSrc = "", randomness = 0.5
       style={{
         width: '100%',
         height: '100%',
-        display: 'block',
+        
       }}
     />
   );
