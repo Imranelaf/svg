@@ -7,20 +7,29 @@
 
 /* FONTS */
 
-@import url('https://fonts.googleapis.com/css2?family=Salsa:wght@400;700&display=swap');
-
-
-.salsa-regular {
-  font-family: "Salsa", cursive;
-  font-weight: 400;
+@font-face {
+  font-family: 'Sticky Paper';
+  src: url('/fonts/Sticky_Paper.otf') format('opentype');
+  font-weight: normal;
   font-style: normal;
 }
 
-.salsa-bold {
-  font-family: "Salsa", cursive;
-  font-weight: 700;
+.stickyFont {
+  font-family: 'Sticky Paper', sans-serif;
+}
+
+@font-face {
+  font-family: 'Kind Daily';
+  src: url('/fonts/Kind_Daily.otf') format('opentype');
+  font-weight: normal;
   font-style: normal;
 }
+
+.KindFont {
+  font-family: 'Kind Daily', sans-serif;
+}
+
+
 
 .container{
   height: contain;

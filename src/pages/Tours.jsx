@@ -1,25 +1,28 @@
+import React from 'react';
 import './tour.css';
 
 const toursData = [
   {
     title: 'Eiffel Tower',
     image: './pictures/Eiffel_tower.jpg',
-    description: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.'
+    description: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.'
   },
   {
     title: 'Eiffel Tower',
     image: './pictures/Eiffel_tower.jpg',
-    description: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.'
+    description: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.'
   },
   {
     title: 'Eiffel Tower',
     image: './pictures/Eiffel_tower.jpg',
-    description: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.'
+    description: 'The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.'
   }
 ];
 
 const Tours = () => {
+  
   return (
+    
     <div className="toursContainer">
       {toursData.map((tour, index) => (
         <section 
@@ -27,6 +30,13 @@ const Tours = () => {
           className={`tourSection ${index % 2 !== 0 ? 'reverse' : ''}`}
         >
           <figure className="tourImageContainer">
+            {/* Scotch tape positioned on each photo */}
+            <img 
+              src="./emojis/scotch.png" 
+              alt="scotch tape" 
+              className="scotchTape"
+            />
+           
             <img 
               src={tour.image} 
               alt={tour.title} 
@@ -39,7 +49,7 @@ const Tours = () => {
             <p>{tour.description}</p>
           </div>
         </section>
-      ))}
+      )      )}
     </div>
   );
 };

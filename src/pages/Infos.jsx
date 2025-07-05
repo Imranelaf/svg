@@ -4,7 +4,7 @@ import './infos.css';
 const Infos = () => {
   return (
     <div className="infosContainer">
-      <h1 className='paragraph savate-regular'>
+      <h1 className='paragraph'>
         Discover the charm of France is our unique and vibrant celebration of culture
         and adventure. We're embracing the beauty that dances between the fascinating
         architecture <img src="./emojis/tower.png" alt="tower" className="tower" />

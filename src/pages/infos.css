@@ -1,4 +1,5 @@
 .infosContainer {
+  
   width: 100vw;
   min-height: 100vh;
   background-color: #f8f8f0;
@@ -28,7 +29,9 @@
 }
 
 .paragraph{
-  font-family: "Savate", Arial, Helvetica, sans-serif;;
+  font-family: 'Kind Daily','Courier New', Courier,  sans-serif;
+  letter-spacing: 0.25rem;
+  font-weight: lighter;
 	margin-bottom: 2rem;
 	width: 70vw;
 	line-height: 2.2; 

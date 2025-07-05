@@ -25,8 +25,8 @@ const Slogan = () => {
 
   return (
     <div className="slogan shape">
-      <h1 ref={textRef} className="sloganText salsa-bold">
-        France: Unforgettable Moments,<br /> Exquisite Experiences
+      <h1 ref={textRef} className="sloganText">
+        France: Unforgettable Moments, Exquisite Experiences
       </h1>
     </div>
   );
