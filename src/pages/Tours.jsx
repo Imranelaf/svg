@@ -1,5 +1,8 @@
-import React from 'react';
+import gsap from 'gsap';
+import toursAnimation from './ToursAnimation';
 import './tour.css';
+import { useGSAP } from '@gsap/react';
+
 
 const toursData = [
   {
@@ -20,7 +23,16 @@ const toursData = [
 ];
 
 const Tours = () => {
+  gsap.registerPlugin(useGSAP);
+
+  useGSAP(() => {
+  // gsap code here...
+  toursAnimation();
+
+}, {}); 
   
+
+
   return (
     
     <div className="toursContainer">
