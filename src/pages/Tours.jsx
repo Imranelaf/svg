@@ -58,7 +58,7 @@ const Tours = () => {
           </figure>
 
           <div className="tourDescription">
-            <p>{tour.description}</p>
+            <p className='parag'>{tour.description}</p>
           </div>
         </section>
       )      )}
